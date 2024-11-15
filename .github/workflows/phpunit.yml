@@ -78,3 +78,89 @@ jobs:
         run: |
           cd ${{ github.workspace }}/server/moodle
           vendor/bin/phpunit --testsuite block_homework_testsuite
+          
+  homework-plugin-test-ubuntu:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install and set up required locale
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y locales
+          sudo locale-gen en_AU.UTF-8
+          sudo update-locale LANG=en_AU.UTF-8
+        
+      - name: Setup PHP
+        id: setup-php
+        uses: shivammathur/setup-php@v2
+        with:
+          extensions: mbstring, intl, iconv, gd, sodium, zip, fileinfo, phar, mysqli
+          tools: composer
+
+      - name: Set up php.ini
+        run: >
+          PHP_INI_PATH=$(php --ini | grep "Loaded Configuration File" | awk '{print $4}')
+          
+          sudo sed -i \
+                   -e '$a max_input_vars=5000' \
+                   "$PHP_INI_PATH"
+
+      - name: Install/Update Composer
+        run: composer self-update --2
+
+      - name: Set up MariaDB
+        uses: ankane/setup-mariadb@v1
+        with:
+          database: moodle
+
+      - name: Install Moodle Composer dependencies
+        run: |
+          cd ${{ github.workspace }}/server/moodle
+          composer install
+
+      - name: Import MoodleSQL file
+        run: |
+          mysql moodle < ${{ github.workspace }}/MoodleSQL.sql
+
+      - name: Run Moodle installation CLI
+        run: |
+          php ${{ github.workspace }}/server/moodle/admin/cli/install.php \
+              --lang=en \
+              --wwwroot="http://localhost:8000/" \
+              --dbhost="127.0.0.1" \
+              --dbname="moodle" \
+              --dbuser="root" \
+              --dbpass="" \
+              --dataroot="${{ github.workspace }}/server/moodledata" \
+              --skip-database \
+              --non-interactive \
+              --agree-license \
+              --allow-unstable \
+              --fullname="Tests for Moodle Homework Plugin" \
+              --shortname="mhp" \
+              --adminpass="Admin.123"
+
+      - name: Configure PHPUnit
+        run: |
+          mkdir -p "${{ github.workspace }}/server/moodledata/phpunit"
+          
+          echo "\$CFG->phpunit_prefix = 'phpu_';" >> "${{ github.workspace }}/server/moodle/config.php"
+          echo "\$CFG->phpunit_dataroot = '${{ github.workspace }}/server/moodledata/phpunit';" >> "${{ github.workspace }}/server/moodle/config.php"
+
+      - name: Initialize PHPUnit
+        run: php ${{ github.workspace }}/server/moodle/admin/tool/phpunit/cli/init.php
+
+      - name: Run tests on mod_homework
+        if: always()
+        run: |
+          cd ${{ github.workspace }}/server/moodle
+          vendor/bin/phpunit --testsuite mod_homework_testsuite
+
+      - name: Run tests on block_homework
+        if: always()
+        run: |
+          cd ${{ github.workspace }}/server/moodle
+          vendor/bin/phpunit --testsuite block_homework_testsuite
