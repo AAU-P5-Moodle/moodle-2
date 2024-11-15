@@ -27,7 +27,6 @@ namespace mod_homework\external;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/externallib.php');
 
 use core_external\external_api;
 use external_function_parameters;
@@ -37,7 +36,7 @@ use external_single_structure;
 /**
  * Class for saving homework materials.
  */
-class save_homework_material extends \external_api {
+class save_homework_material extends external_api {
     /**
      * Returns parameters inputfield, link, startpage, endpage, starttime, endtime, homeworkid and fileid
      *

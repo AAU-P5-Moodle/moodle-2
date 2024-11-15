@@ -24,10 +24,6 @@
 
 namespace mod_homework\external;
 
-defined('MOODLE_INTERNAL') || die();
-
-require_once("$CFG->libdir/externallib.php");
-
 use core\exception\moodle_exception;
 use external_api;
 use external_function_parameters;
