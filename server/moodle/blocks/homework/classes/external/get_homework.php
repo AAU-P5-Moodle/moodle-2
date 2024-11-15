@@ -28,8 +28,8 @@ namespace block_homework\external;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once("$CFG->libdir/externallib.php");
 
+use core_external\external_api;
 use coding_exception;
 use dml_exception;
 use external_function_parameters;
@@ -40,7 +40,7 @@ use JsonException;
 /**
  *
  */
-class get_homework extends \external_api {
+class get_homework extends external_api {
     /**
      *
      * @return external_function_parameters Is a definition of the functions parameter type and a description of it.

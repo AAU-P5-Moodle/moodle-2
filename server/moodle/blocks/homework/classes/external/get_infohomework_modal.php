@@ -18,7 +18,6 @@ namespace block_homework\external;
 
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once("$CFG->libdir/externallib.php");
 
 use core_external\external_api;
 use external_function_parameters;
