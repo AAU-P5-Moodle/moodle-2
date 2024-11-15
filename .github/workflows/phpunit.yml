@@ -1,16 +1,7 @@
 name: PHPUnit Tests for Moodle Homework Plugin
 
 on:
-  push:
-    branches: [ "main" ]
-    paths:
-      - 'server/moodle/blocks/homework/**'
-      - 'server/moodle/mod/homework/**'
-  pull_request:
-    types: [opened, reopened, synchronize]
-    paths:
-      - 'server/moodle/blocks/homework/**'
-      - 'server/moodle/mod/homework/**'
+  workflow_dispatch:
 
 jobs:
   homework-plugin-test:
