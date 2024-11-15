@@ -25,7 +25,7 @@
 namespace mod_homework\external;
 
 use core\exception\moodle_exception;
-use external_api;
+use core_external\external_api;
 use external_function_parameters;
 use external_value;
 use context_system;

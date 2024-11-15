@@ -36,7 +36,7 @@ use external_single_structure;
 /**
  * Class for editing homework materials.
  */
-class edit_homework_material extends \external_api {
+class edit_homework_material extends external_api {
     /**
      * Returns parameters id, inputfield, link, startpage, endpage, starttime, endtime, homeworkid and fileid
      *
