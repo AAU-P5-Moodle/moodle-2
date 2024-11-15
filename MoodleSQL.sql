@@ -1,4 +1,4 @@
-mdl_user-- --------------------------------------------------------
+-- --------------------------------------------------------
 -- Host:                         127.0.0.1
 -- Server version:               11.5.2-MariaDB - mariadb.org binary distribution
 -- Server OS:                    Win64
