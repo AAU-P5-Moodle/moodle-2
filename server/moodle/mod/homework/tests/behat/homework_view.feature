@@ -34,7 +34,7 @@ Feature: Viewing the homework page
     And I am on "Example Course" course homepage with editing mode off
 @javascript
   Scenario: Teacher views the homework materials
-    //When I click on "Myhomework" "link" in the "homework" activity
+    When I click on "Myhomework" "link" in the "homework" activity
 
-    //And I should see "Myhomework"
+    And I should see "Myhomework"
 

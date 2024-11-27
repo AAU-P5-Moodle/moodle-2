@@ -226,4 +226,112 @@ final class delete_homework_test extends advanced_testcase {
         $deletedrecord = $DB->get_record('homework_materials', ['id' => $recordid]);
         $this->assertFalse($deletedrecord);
     }
+
+
+    /**
+     * Test deleting a homework with a video.
+     *
+     * @runInSeparateProcess
+     * @throws dml_exception
+     * @covers :: \mod_homework\external\save_homework_video
+     */
+    public function test_delete_homework_video(): void {
+        global $DB;
+
+        // Call the external class method.
+        $inputfield = 'Test Video';
+        $link = null;
+        $startpage = null;
+        $endpage = null;
+        $starttime = 0;
+        $endtime = 60;
+        $homeworkid = 1;
+        $fileid = null;
+
+        $record = new \stdClass();
+        $record->inputfield = $inputfield;
+        $record->homeworkid = $homeworkid;
+        $record->startpage = $startpage;
+        $record->endpage = $endpage;
+        $record->starttime = $starttime;
+        $record->endtime = $endtime;
+        $record->fileid = $fileid;
+        $record->link = $link;
+
+        $deleteresult = \mod_homework\external\delete_homework_material::execute($record->homeworkid, $record->fileid);
+        // Assert that the status is 'success' for deletion.
+        $this->assertEquals('success', $deleteresult['status']);
+        $this->assertEquals('Data deleted successfully', $deleteresult['message']);
+
+        // Verify that the record no longer exists in the database.
+        $deletedrecord = $DB->get_record('homework_materials', ['id' => $record->fileid]);
+        $this->assertFalse($deletedrecord);
+    }
+
+    /**
+     * Tests if an exception is thrown when deleting a file that does not exist
+     * @runInSeparateProcess
+     * @throws moodle_exception
+     * @throws dml_exception
+     * @covers :: \mod_homework\external\delete_file
+     */
+    public function test_delete_non_existing_homeworkfile(): void {
+        // Call the external class method.
+        $inputfield = 'Test Video';
+        $link = null;
+        $startpage = null;
+        $endpage = null;
+        $starttime = 0;
+        $endtime = 60;
+        $homeworkid = 1;
+        $fileid = null;
+
+        $result = \mod_homework\external\save_homework_material::execute(
+            $inputfield,
+            $homeworkid,
+            $link,
+            $startpage,
+            $endpage,
+            $starttime,
+            $endtime,
+            $fileid
+        );
+
+        $invalidfileid = 999; // Non-existent file ID.
+
+        $this->expectException(\moodle_exception::class);
+
+        // Attempt to delete with an invalid file ID.
+        \mod_homework\external\delete_file::execute($homeworkid, $invalidfileid);
+    }
+
+    public function test_delete_non_existing_homework(): void {
+        // Call the external class method.
+        $inputfield = 'Test Video';
+        $link = null;
+        $startpage = null;
+        $endpage = null;
+        $starttime = 0;
+        $endtime = 60;
+        $homeworkid = 1;
+        $fileid = null;
+
+        $result = \mod_homework\external\save_homework_material::execute(
+            $inputfield,
+            $homeworkid,
+            $link,
+            $startpage,
+            $endpage,
+            $starttime,
+            $endtime,
+            $fileid
+        );
+
+        $invalidfileid = 99; // Non-existent file ID.
+        // Attempt to delete with an invalid file ID.
+        $result = \mod_homework\external\delete_homework_material::execute($homeworkid, $invalidfileid);
+        $this->assertDebuggingCalled(null, DEBUG_DEVELOPER);
+        $this->assertEquals('error', $result['status']);
+        $this->assertEquals('Failed to delete homework materials record', $result['message']);
+    }
 }

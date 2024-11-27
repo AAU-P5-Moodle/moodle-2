@@ -18,6 +18,7 @@ namespace block_homework;
 
 use advanced_testcase;
 use block_homework\external\save_homeworktime;
+use dml_exception;
 
 /**
  * Test for the external function saving time taken for homework
@@ -28,7 +29,7 @@ use block_homework\external\save_homeworktime;
 final class save_homeworktime_test extends advanced_testcase {
     /**
      * Test the save_homeworktime execute function
-     * @throws \dml_exception
+     * @throws dml_exception
      * @covers :: \block_homework\external\save_homeworktime
      * @runInSeparateProcess
      */
@@ -122,11 +123,36 @@ final class save_homeworktime_test extends advanced_testcase {
     }
 
     /**
+     *
+     * @return void
+     * @runInSeparateProcess
+     * @throws dml_exception
+     * @covers :: \block_homework\classes\external\save_homeworktime
+     */
+    public function test_save_timeout_error(): void {
+        global $DB;
+        $timecompletedvideos = [
+            ['id' => null, 'time' => null],
+            ['id' => null, 'time' => null],
+        ];
+        // Reset the database after each test.
+        $this->resetAfterTest();
+
+        // Prepare test data.
+        $user = $this->getDataGenerator()->create_user();
+        $userid = $user->id;
+
+        $this->expectException(\dml_write_exception::class);
+
+        save_homeworktime::execute($userid, $timecompletedvideos);
+    }
+
+    /**
      * Helper function to check if a record exists in the database.
      *
      * @param string $table The database table name.
      * @param array $conditions Array of conditions to match.
-     * @throws \dml_exception
+     * @throws dml_exception
      */
     private function assertrecordexists(string $table, array $conditions): void {
         global $DB;

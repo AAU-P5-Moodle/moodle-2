@@ -226,6 +226,7 @@ final class edit_homework_test extends advanced_testcase {
      * @covers :: \mod_homework\external\save_homework_video
      */
     public function test_edit_homework_video(): void {
+
         global $DB;
 
         // Call the external class method.
@@ -304,5 +305,150 @@ final class edit_homework_test extends advanced_testcase {
         $this->assertEquals($newstarttime, $updatedrecord->starttime);
         $this->assertEquals($newendtime, $updatedrecord->endtime);
         $this->assertEquals($homeworkid, $updatedrecord->homework_id);
+    }
+
+
+    /**
+     * Test editing a homework with wrong data type.
+     *
+     * @runInSeparateProcess
+     * @throws dml_exception
+     * @covers :: \mod_homework\external\edit_homework_material
+     */
+    public function test_edit_homework_wrong_attribute_type(): void {
+        global $DB;
+
+        // Call the external class method.
+        $inputfield = 'Test Literature';
+        $link = 'https://www.test.com';
+        $startpage = 1;
+        $endpage = 10;
+        $starttime = null;
+        $endtime = null;
+        $homeworkid = 1;
+        $fileid = null;
+
+        $result = \mod_homework\external\save_homework_material::execute(
+            $inputfield,
+            $homeworkid,
+            $link,
+            $startpage,
+            $endpage,
+            $starttime,
+            $endtime,
+            $fileid
+        );
+
+        // Assert that the status is 'success'.
+        $this->assertEquals('success', $result['status']);
+        $this->assertEquals('Data saved successfully', $result['message']);
+
+        // Verify that the data was saved in the database.
+        $record = $DB->get_record_select(
+            'homework_materials',
+            $DB->sql_compare_text('description') . ' = :description',
+            ['description' => $inputfield],
+            '*',
+            MUST_EXIST
+        );
+
+        $this->assertEquals($link, $record->link);
+        $this->assertEquals($homeworkid, $record->homework_id);
+
+        $recordid = $record->id;
+
+        // Updated data for editing the homework material.
+        $newendpage = "ok";
+        $newlink = 'https://www.youtube.com';
+        // Call the edit method to update the existing record.
+        $editresult = \mod_homework\external\edit_homework_material::execute(
+            $recordid,
+            $inputfield,
+            $homeworkid,
+            $newlink,
+            $startpage,
+            $newendpage,
+            $starttime,
+            $endtime,
+            $fileid
+        );
+
+        // Assert that the edit was successful.
+        $this->assertEquals('error', $editresult['status']);
+        $this->assertEquals('Failed to edit homework materials record', $editresult['message']);
+        $this->assertDebuggingCalled(null, DEBUG_DEVELOPER);
+    }
+
+    /**
+     * Test editing a homework without required parameter.
+     *
+     * @runInSeparateProcess
+     * @throws dml_exception
+     * @covers :: \mod_homework\external\edit_homework_material
+     */
+    public function test_edit_homework_missing_required_parameter(): void {
+        global $DB;
+
+        // Call the external class method.
+        $inputfield = 'Test Literature';
+        $link = 'https://www.test.com';
+        $startpage = 1;
+        $endpage = 10;
+        $starttime = null;
+        $endtime = null;
+        $homeworkid = 1;
+        $fileid = null;
+
+        $result = \mod_homework\external\save_homework_material::execute(
+            $inputfield,
+            $homeworkid,
+            $link,
+            $startpage,
+            $endpage,
+            $starttime,
+            $endtime,
+            $fileid
+        );
+
+        // Assert that the status is 'success'.
+        $this->assertEquals('success', $result['status']);
+        $this->assertEquals('Data saved successfully', $result['message']);
+
+        // Verify that the data was saved in the database.
+        $record = $DB->get_record_select(
+            'homework_materials',
+            $DB->sql_compare_text('description') . ' = :description',
+            ['description' => $inputfield],
+            '*',
+            MUST_EXIST
+        );
+
+        $this->assertEquals($link, $record->link);
+        $this->assertEquals($homeworkid, $record->homework_id);
+
+        $recordid = $record->id;
+
+        // Updated data for editing the homework material.
+        $newendpage = "ok";
+        $newlink = 'https://www.youtube.com';
+        $newinputfield = null;
+
+        // Call the edit method to update the existing record.
+        $editresult = \mod_homework\external\edit_homework_material::execute(
+            $recordid,
+            $newinputfield,
+            $homeworkid,
+            $newlink,
+            $startpage,
+            $newendpage,
+            $starttime,
+            $endtime,
+            $fileid
+        );
+
+        // Assert that the edit was successful.
+        $this->assertEquals('error', $editresult['status']);
+        $this->assertEquals('Failed to edit homework materials record', $editresult['message']);
+        $this->assertDebuggingCalled(null, DEBUG_DEVELOPER);
     }
 }

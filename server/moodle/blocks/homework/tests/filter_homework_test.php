@@ -38,7 +38,7 @@ final class filter_homework_test extends \advanced_testcase {
      * @runInSeparateProcess
      */
     public function test_filter_homework(): void {
-        // Create test data
+        // Create test data.
         $homeworksarray = [];
 
         $homeworksarray[] = [

@@ -244,4 +244,78 @@ final class save_homework_test extends advanced_testcase {
         // Assert that the output contains a success message.
         $this->assertStringContainsString('"status":"success","message":"File uploaded successfully"', $output);
     }
+
+    /**
+     * Test editing a homework without required parameter.
+     *
+     * @runInSeparateProcess
+     * @throws dml_exception
+     * @covers :: \mod_homework\external\save_homework_material
+     */
+    public function test_save_homework_missing_required_parameter(): void {
+        global $DB;
+
+        // Call the external class method.
+        $inputfield = null;
+        $link = 'https://www.test.com';
+        $startpage = 1;
+        $endpage = 10;
+        $starttime = null;
+        $endtime = null;
+        $homeworkid = 1;
+        $fileid = null;
+
+        $result = \mod_homework\external\save_homework_material::execute(
+            $inputfield,
+            $homeworkid,
+            $link,
+            $startpage,
+            $endpage,
+            $starttime,
+            $endtime,
+            $fileid
+        );
+
+        // Assert that the status is 'success'.
+        $this->assertEquals('error', $result['status']);
+        $this->assertEquals('Failed to save homework materials record', $result['message']);
+        $this->assertDebuggingCalled(null, DEBUG_DEVELOPER);
+    }
+
+    /**
+     * Test editing a homework without required parameter.
+     *
+     * @runInSeparateProcess
+     * @throws dml_exception
+     * @covers :: \mod_homework\external\save_homework_material
+     */
+    public function test_save_homework_wrong_attribute_type(): void {
+        global $DB;
+
+        // Call the external class method.
+        $inputfield = 'Homework';
+        $link = 'https://www.test.com';
+        $startpage = 1;
+        $endpage = "Number as a string";
+        $starttime = null;
+        $endtime = null;
+        $homeworkid = 1;
+        $fileid = null;
+
+        $result = \mod_homework\external\save_homework_material::execute(
+            $inputfield,
+            $homeworkid,
+            $link,
+            $startpage,
+            $endpage,
+            $starttime,
+            $endtime,
+            $fileid
+        );
+
+        // Assert that the status is 'success'.
+        $this->assertEquals('error', $result['status']);
+        $this->assertEquals('Failed to save homework materials record', $result['message']);
+        $this->assertDebuggingCalled(null, DEBUG_DEVELOPER);
+    }
 }

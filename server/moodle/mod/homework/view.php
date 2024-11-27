@@ -83,7 +83,6 @@ echo $OUTPUT->header();
 
 $viewobj = new view_page();
 $viewobj->canedit = true;
-$viewobj->editurl = new moodle_url('/mod/homework/edit.php', ['id' => $cm->id]);
 
 
 

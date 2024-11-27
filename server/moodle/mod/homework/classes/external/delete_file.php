@@ -24,7 +24,10 @@
 
 namespace mod_homework\external;
 
+use core\exception\coding_exception;
+use core\exception\invalid_parameter_exception;
 use core\exception\moodle_exception;
+use core\exception\require_login_exception;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_value;
@@ -54,8 +57,9 @@ class delete_file extends external_api {
      * @param int $id The ID of the homework to update.
      * @param int $fileid The ID of the file to delete.
      * @return bool True if the file was successfully deleted, false otherwise.
+     * @throws invalid_parameter_exception | coding_exception | require_login_exception | moodle_exception
      */
-    public static function execute($id, $fileid) {
+    public static function execute($id, $fileid): bool {
         global $DB;
 
         // Validate parameters.
