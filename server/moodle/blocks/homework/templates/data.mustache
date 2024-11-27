@@ -19,10 +19,10 @@
 
 <div class="container">
 
-    <div class="btn-container">
-        <button class="nav-btn" id="todaybtn">today</button>
-        <button class="nav-btn" id="prevbtn"><-</button>
-        <button class="nav-btn" id="nextbtn">-></button>
+    <div class="btn-container float-end">
+        <button class="nav-btn" id="todaybtn">Today</button>
+        <button class="nav-btn" id="prevbtn"><</button>
+        <button class="nav-btn" id="nextbtn">></button>
         <label for="sort">Sort By:</label>
         <select name="sort" id="sort">
             <option value="all">All</option>
@@ -42,20 +42,26 @@
         {{#data}}
             <div class="infobox">
                 <h2>{{courseTitle}}</h2>
-                <h2>{{name}}</h2>
-                <h3>{{duedate}}</h3>
-                <h4>Expected time: {{expectedTime}} minutes</h4>
+                <div class="inline-container">
+                    <h2 class="name">{{name}}</h2>
+                    <h3 class="duedate">{{duedate}}</h3>
+                </div>
+                <h4 class="expectedtime">Expected time: {{expectedTime}} minutes</h4>
                 <p>{{intro}}</p>
-                <button class="timebutton" data-homework-id={{id}} id="{{id}}"">Time</button>
                 {{#files}}
+                    <div class="infoboxfiles">
                     <img src="{{iconurl}}" alt="File icon">
+                        <div class="link">
                     <a href="{{fileurl}}" download="{{filename}}">{{filename}}</a>
 
                     <!-- Conditionally show a time estimate if it exists -->
                         {{#timeestimate}}
-                            <p>Estimated time in minutes: {{timeestimate}}</p>
+                            <p class="eta">Estimated time in minutes: {{timeestimate}}</p>
                         {{/timeestimate}}
+                        </div>
+                    </div>
                 {{/files}}
+                <button class="timebutton" data-homework-id={{id}} id="{{id}}">Time</button>
             </div>
         {{/data}}
     </div>
