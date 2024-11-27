@@ -66,7 +66,6 @@ if ($PAGE->has_secondary_navigation()) {
 // Output the header - REQUIRED.
 echo $OUTPUT->header();
 
-echo html_writer::tag('div', 'This is the homework edit page', ['class' => 'content']);
 
 $homeworkmaterials = $DB->get_records_sql(
     "SELECT hm.*, f.filename
@@ -85,6 +84,9 @@ $homeworkmaterials = $DB->get_records_sql(
  * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+echo '<div class="view-homework-container">';
+
 foreach ($homeworkmaterials as $materials) :
     // Generate the preview URL for the file if it exists.
     if ($materials->file_id !== null) {
@@ -104,16 +106,20 @@ foreach ($homeworkmaterials as $materials) :
     }
     ?>
 
-    <div
-        class="material"
-        style="
-            border: 1px solid #ccc;
-            padding: 16px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            background-color: #f9f9f9;
-        "
-    >
+    <div class="material">
+
+        <?php if ($materials->startpage != null):
+            echo '<i class="fa-solid fa-book"></i>';
+        elseif ($materials->link != null):
+            echo '<i class="fa-solid fa-link"></i>';
+        elseif ($materials->starttime != null):
+            echo '<i class="fa-solid fa-play"></i>';
+        elseif ($materials->file_id != null):
+            echo '<i class="fa-solid fa-file"></i>';
+        endif; ?>
+
+    <div class="material-container">
+
         <p><?= htmlspecialchars($materials->description) ?></p>
         <?php if ($materials->startpage !== null && $materials->endpage !== null) : ?>
             <p><?= "Page: " .
@@ -138,7 +144,7 @@ foreach ($homeworkmaterials as $materials) :
         <?php if ($materials->file_id !== null && isset($previewurl)) : ?>
             <?php if (strtolower(pathinfo($file->filename, PATHINFO_EXTENSION)) === 'mp4') : ?>
                 <!-- Display the video inline if it's an mp4 file -->
-                <video controls width="800" height="360">
+                <video controls width="640" height="360">
                     <source src="<?= $previewurl ?>" type="video/mp4">
                     Your browser does not support the video tag.
                 </video>
@@ -171,7 +177,9 @@ foreach ($homeworkmaterials as $materials) :
             ]
         ); ?>
     </div>
+    </div>
 <?php endforeach; ?>
+
 <?php
 /**
  *
