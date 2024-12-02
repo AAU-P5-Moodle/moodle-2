@@ -42,3 +42,11 @@
     font-size: 20px;
     font-weight: bold;
 }
+
+.homework-action-buttons button {
+    margin-right: 10px;
+}
+
+.homework-action-buttons button:last-child {
+    margin-right: 0;
+}
