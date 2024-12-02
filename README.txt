@@ -1,3 +1,37 @@
+HOMEWORK PLUGIN
+===============
+This plugin adds a new activity ressource as an option to add to a course,
+as well as displaying such homeworks on the dashboard.
+
+The activity module adds a new activity option when adding activities to a
+course under the course page. This activity option is homework, which the user
+can choose to edit to include a description, start time, due date, and material
+for the homework.
+
+Material can be created while creating homework, such that it is added to the
+database, and can be reused in homework later, e.g. a course book that is reused across
+multiple homeworks. The types of material that can be created are litterature,
+links, and videos. Videos are embedded in Moodle, and can be viewed directly on the page.
+
+Homework that has been added as an activity to the course is displayed on the
+dashboard, as well as in the calendar. Displaying the calendar
+is handled by the block module.
+
+Homework can be filtered on the dashboard based on courses, e.g. the user only
+wishes to see homework from the 'Database Systems' course, and filtered to shown future,
+past or all homework. Additionally, displayed homework can be sorted based on certain
+parameters, such as due date. Students can also download all materials assigned to a
+homework activity as a single ZIP file.
+
+The activity module can be found in:
+server/moodle/mod/homework
+
+The block module can be found in:
+server/moodle/blocks/homework
+
+
+
+
 MOODLE FOR WINDOWS 
 ==================
 
